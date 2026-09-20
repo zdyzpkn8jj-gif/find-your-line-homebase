@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
+  ArrowLeft,
   ArrowRight,
   BarChart3,
   Brain,
@@ -23,16 +24,56 @@ import {
 import "./styles.css";
 
 const cycles = [
-  ["01", "Current Reality", "Understand where you are today and what feels stuck, strong, or out of alignment."],
-  ["02", "North Star", "Define what success and fulfillment actually mean to you—not to everyone else."],
-  ["03", "Trap Patterns", "Recognize the recurring cycles that quietly interrupt your progress."],
-  ["04", "Meaningful Action", "Learn to move before perfect certainty or motivation arrives."],
-  ["05", "Decision-Making", "Separate facts from assumptions and make clearer, more intentional choices."],
-  ["06", "Reality Testing", "Test ideas in the real world before making major commitments."],
-  ["07", "Recovery", "Learn how to respond when plans fail, life changes, or setbacks hit."],
-  ["08", "Self-Trust", "Build confidence from evidence—not hype or empty encouragement."],
-  ["09", "Independence", "Begin using the system without waiting for someone else to guide every step."],
-  ["10", "Ownership", "Create your Personal Success Plan and take the process forward as your own."]
+  [
+    "01",
+    "Current Reality",
+    "Understand where you are today and what feels stuck, strong, or out of alignment."
+  ],
+  [
+    "02",
+    "North Star",
+    "Define what success and fulfillment actually mean to you—not to everyone else."
+  ],
+  [
+    "03",
+    "Trap Patterns",
+    "Recognize the recurring cycles that quietly interrupt your progress."
+  ],
+  [
+    "04",
+    "Meaningful Action",
+    "Learn to move before perfect certainty or motivation arrives."
+  ],
+  [
+    "05",
+    "Decision-Making",
+    "Separate facts from assumptions and make clearer, more intentional choices."
+  ],
+  [
+    "06",
+    "Reality Testing",
+    "Test ideas in the real world before making major commitments."
+  ],
+  [
+    "07",
+    "Recovery",
+    "Learn how to respond when plans fail, life changes, or setbacks hit."
+  ],
+  [
+    "08",
+    "Self-Trust",
+    "Build confidence from evidence—not hype or empty encouragement."
+  ],
+  [
+    "09",
+    "Independence",
+    "Begin using the system without waiting for someone else to guide every step."
+  ],
+  [
+    "10",
+    "Ownership",
+    "Create your Personal Success Plan and take the process forward as your own."
+  ]
 ];
 
 const audienceItems = [
@@ -67,26 +108,29 @@ const outcomes = [
 ];
 
 const included = [
-  "Personal Starting Assessment + Starting Profile",
+  "Personal Starting Assessment",
+  "Personal Starting Profile",
   "10 Personal Growth Cycles",
   "Human coaching at key decision points",
   "AI-supported continuity between sessions",
-  "Find Your Line Homebase + Evidence Log",
-  "Monthly progress reviews + Personal Success Plan"
+  "Find Your Line Homebase",
+  "Evidence Log",
+  "Monthly progress reviews",
+  "Personal Success Plan"
 ];
 
 const faqs = [
   [
     "What happens after I apply?",
-    "Your application is reviewed first. If the program appears to be a good fit, the next step is explained before you make any payment or commitment."
+    "Your application is reviewed first. If Find Your Line appears to be a good fit, we will explain the next step before you move forward."
   ],
   [
     "Who will I actually be working with?",
-    "Find Your Line combines human guidance with AI-supported continuity. Human support is used for perspective, accountability, and important decision points; AI support helps you keep momentum between those moments."
+    "Find Your Line combines human guidance with AI-supported continuity. Human support is used for perspective, accountability, and important decision points. AI support helps maintain continuity and momentum between those moments."
   ],
   [
     "How much time should I expect to put into this?",
-    "The program is designed to work alongside real life. The goal is steady, meaningful action—not hours of homework every week. Your exact pace can vary by cycle and by what you are working through."
+    "The program is designed to work alongside real life. The goal is steady, meaningful action—not hours of homework every week. Your exact pace can vary depending on the cycle and what you are working through."
   ],
   [
     "What does the AI support actually do?",
@@ -98,15 +142,15 @@ const faqs = [
   ],
   [
     "What if my goal changes?",
-    "Goals are allowed to change. The process helps you distinguish between quitting because something became uncomfortable and intentionally changing direction because new information points somewhere better."
+    "Goals are allowed to change. The system helps you distinguish between quitting because something became uncomfortable and intentionally changing direction because new information points somewhere better."
+  ],
+  [
+    "Will you tell me what to do?",
+    "Guidance and perspective may be offered, but the goal is to strengthen your ability to make your own decisions rather than create dependence."
   ],
   [
     "Is this therapy?",
     "No. Find Your Line is a personal-development and decision-support program. It does not diagnose or treat mental-health conditions and does not replace appropriate medical, legal, financial, addiction-treatment, or crisis services."
-  ],
-  [
-    "How much does it cost?",
-    "Founding Members start for $99, followed by 11 monthly payments of $200. Total program investment: $2,299."
   ]
 ];
 
@@ -114,22 +158,41 @@ function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [showAllCycles, setShowAllCycles] = useState(false);
+  const [investmentOpen, setInvestmentOpen] = useState(false);
 
   const navItems = useMemo(
     () => [
       ["Who it is for", "#fit"],
       ["How it works", "#how-it-works"],
       ["Homebase", "#dashboard"],
-      ["Pricing", "#pricing"],
       ["Growth cycles", "#cycles"],
       ["FAQ", "#faq"]
     ],
     []
   );
 
+  useEffect(() => {
+    document.body.style.overflow = investmentOpen ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [investmentOpen]);
+
   const scrollTo = (hash: string) => {
     setMobileOpen(false);
-    document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" });
+    setInvestmentOpen(false);
+
+    setTimeout(() => {
+      document.querySelector(hash)?.scrollIntoView({
+        behavior: "smooth"
+      });
+    }, 20);
+  };
+
+  const openInvestment = () => {
+    setMobileOpen(false);
+    setInvestmentOpen(true);
   };
 
   const visibleCycles = showAllCycles ? cycles : cycles.slice(0, 5);
@@ -146,6 +209,7 @@ function App() {
             <span className="brand-mark">
               <Route size={19} />
             </span>
+
             <span>
               <strong>Find Your Line</strong>
               <small>Choose your line. Own your direction.</small>
@@ -158,6 +222,13 @@ function App() {
                 {label}
               </button>
             ))}
+
+            <button
+              className="investment-nav-link"
+              onClick={openInvestment}
+            >
+              Your Investment
+            </button>
           </nav>
 
           <div className="nav-actions">
@@ -185,6 +256,14 @@ function App() {
                 {label}
               </button>
             ))}
+
+            <button
+              className="mobile-investment-link"
+              onClick={openInvestment}
+            >
+              Your Investment
+              <ArrowRight size={17} />
+            </button>
           </div>
         )}
       </header>
@@ -198,7 +277,8 @@ function App() {
           <div className="container hero-grid">
             <div className="hero-copy">
               <div className="eyebrow">
-                <Sparkles size={16} /> Founding Member Pilot
+                <Sparkles size={16} />
+                Founding Member Pilot
               </div>
 
               <p className="brand-overline">FIND YOUR LINE</p>
@@ -212,8 +292,8 @@ function App() {
 
               <p className="hero-support">
                 Find Your Line helps you turn that frustration into clarity,
-                direction, and meaningful action—without pretending there is one
-                right path for everyone.
+                direction, and meaningful action—without pretending there is
+                one right path for everyone.
               </p>
 
               <div className="hero-actions">
@@ -221,7 +301,7 @@ function App() {
                   className="primary-button"
                   onClick={() => scrollTo("#apply")}
                 >
-                  Apply for the Founding Member Program
+                  Start My Application Now — $99
                   <ArrowRight size={18} />
                 </button>
 
@@ -233,18 +313,15 @@ function App() {
                 </button>
               </div>
 
-              <p className="cta-note">
-                $99 to begin if accepted · No payment is collected with your
-                application.
-              </p>
-
               <div className="micro-proof">
                 <span>
                   <Check size={15} /> 10 Growth Cycles
                 </span>
+
                 <span>
                   <Check size={15} /> Human + AI support
                 </span>
+
                 <span>
                   <Check size={15} /> Personal Success Plan
                 </span>
@@ -263,12 +340,15 @@ function App() {
                 <span>
                   <Waves size={17} /> Calm
                 </span>
+
                 <span>
                   <Sunrise size={17} /> Clarity
                 </span>
+
                 <span>
                   <Mountain size={17} /> Challenge
                 </span>
+
                 <span>
                   <Route size={17} /> Direction
                 </span>
@@ -300,6 +380,7 @@ function App() {
                   <span className="fit-check">
                     <Check size={17} />
                   </span>
+
                   <p>{item}</p>
                 </div>
               ))}
@@ -360,6 +441,7 @@ function App() {
               <article className="feature-card">
                 <Compass />
                 <h3>Define what matters</h3>
+
                 <p>
                   Build your North Star around the life you actually want to
                   create.
@@ -369,6 +451,7 @@ function App() {
               <article className="feature-card">
                 <Brain />
                 <h3>Understand the pattern</h3>
+
                 <p>
                   Identify what repeatedly interrupts your progress and why it
                   happens.
@@ -378,6 +461,7 @@ function App() {
               <article className="feature-card">
                 <Target />
                 <h3>Take meaningful action</h3>
+
                 <p>
                   Turn insight into the smallest action that actually changes
                   something.
@@ -387,6 +471,7 @@ function App() {
               <article className="feature-card">
                 <RefreshCw />
                 <h3>Adapt and recover</h3>
+
                 <p>
                   Use setbacks as information instead of proof that you should
                   quit.
@@ -396,6 +481,7 @@ function App() {
               <article className="feature-card">
                 <BarChart3 />
                 <h3>Build evidence</h3>
+
                 <p>
                   Capture real examples of changed behavior and growing
                   self-trust.
@@ -405,6 +491,7 @@ function App() {
               <article className="feature-card">
                 <ShieldCheck />
                 <h3>Own your direction</h3>
+
                 <p>
                   The goal is increasing independence—not lifelong dependence
                   on a coach.
@@ -492,26 +579,31 @@ function App() {
 
               <p>
                 Homebase keeps the important pieces visible so you can return
-                to your direction without having to rebuild your thinking every
-                time life gets noisy.
+                to your direction without rebuilding your thinking every time
+                life gets noisy.
               </p>
 
               <ul className="plain-list">
                 <li>
                   <Check size={17} /> Your North Star
                 </li>
+
                 <li>
                   <Check size={17} /> Your Current Chapter
                 </li>
+
                 <li>
                   <Check size={17} /> Your Current Focus
                 </li>
+
                 <li>
                   <Check size={17} /> Your Next Meaningful Move
                 </li>
+
                 <li>
                   <Check size={17} /> Your Trap Pattern
                 </li>
+
                 <li>
                   <Check size={17} /> Your Evidence Log
                 </li>
@@ -521,7 +613,7 @@ function App() {
                 className="secondary-button dashboard-cta"
                 onClick={() => scrollTo("#apply")}
               >
-                Apply to Find Your Line
+                Start My Application Now — $99
                 <ArrowRight size={17} />
               </button>
             </div>
@@ -540,6 +632,7 @@ function App() {
 
               <div className="dash-card featured">
                 <span>MY NORTH STAR</span>
+
                 <p>
                   Build a life with more control, purpose, meaningful work, and
                   time for what matters.
@@ -549,6 +642,7 @@ function App() {
               <div className="dash-two">
                 <div className="dash-card">
                   <span>CURRENT FOCUS</span>
+
                   <p>
                     Validate the next career move with real-world evidence.
                   </p>
@@ -567,6 +661,7 @@ function App() {
 
               <div className="evidence-strip">
                 <Footprints size={20} />
+
                 <div>
                   <strong>Evidence +1</strong>
                   <span>You acted before feeling completely ready.</span>
@@ -582,7 +677,9 @@ function App() {
 
           <div className="container perspective-wrap">
             <div className="perspective-copy">
-              <span className="section-kicker">Get outside the noise</span>
+              <span className="section-kicker">
+                Get outside the noise
+              </span>
 
               <h2>
                 Clarity often shows up when the noise gets quiet.
@@ -601,6 +698,7 @@ function App() {
                 <Compass size={24} />
                 <span>01</span>
                 <h3>Clarity</h3>
+
                 <p>
                   Step away from the noise and see where you really are.
                 </p>
@@ -610,6 +708,7 @@ function App() {
                 <Mountain size={24} />
                 <span>02</span>
                 <h3>Perspective</h3>
+
                 <p>
                   Look at the terrain before deciding which line to take.
                 </p>
@@ -619,6 +718,7 @@ function App() {
                 <Route size={24} />
                 <span>03</span>
                 <h3>Direction</h3>
+
                 <p>
                   Choose the next move and begin moving deliberately.
                 </p>
@@ -648,6 +748,14 @@ function App() {
                 getting a structured system designed to move them toward
                 greater clarity, action, and independence.
               </p>
+
+              <button
+                className="investment-inline-link"
+                onClick={openInvestment}
+              >
+                Explore Your Investment
+                <ArrowRight size={17} />
+              </button>
             </div>
 
             <div className="founding-principle">
@@ -659,74 +767,6 @@ function App() {
               </blockquote>
 
               <span>Choose your line. Own your direction.</span>
-            </div>
-          </div>
-        </section>
-
-        <section id="pricing" className="section pricing-section">
-          <div className="container pricing-wrap">
-            <div className="pricing-copy">
-              <span className="section-kicker">
-                Founding Member Pilot
-              </span>
-
-              <h2>
-                Start for $99. Know the full investment before you begin.
-              </h2>
-
-              <p>
-                If you are accepted, your first $99 begins the program. The
-                remaining investment is spread across 11 monthly payments of
-                $200.
-              </p>
-
-              <div className="price-line">
-                <strong>$99</strong>
-                <span>to begin if accepted</span>
-              </div>
-
-              <div className="payment-plan">
-                <div>
-                  <span className="payment-label">Then</span>
-                  <strong>11 × $200</strong>
-                  <span>monthly payments</span>
-                </div>
-
-                <div>
-                  <span className="payment-label">Total</span>
-                  <strong>$2,299</strong>
-                  <span>program investment</span>
-                </div>
-              </div>
-
-              <p className="pricing-note">
-                No payment is collected with your application. The next step
-                and full pricing are explained before you make a commitment.
-              </p>
-            </div>
-
-            <div className="price-card">
-              <h3>What your investment includes</h3>
-
-              {included.map(item => (
-                <div className="price-item" key={item}>
-                  <Check size={17} />
-                  {item}
-                </div>
-              ))}
-
-              <button
-                className="primary-button full"
-                onClick={() => scrollTo("#apply")}
-              >
-                Apply for the Founding Member Program
-                <ArrowRight size={18} />
-              </button>
-
-              <p className="price-card-note">
-                Application first. Payment only after the next step is
-                explained.
-              </p>
             </div>
           </div>
         </section>
@@ -780,10 +820,19 @@ function App() {
             <div>
               <span className="section-kicker">FAQ</span>
               <h2>Clear answers before you apply.</h2>
+
               <p>
                 Know what the program is, what it is not, and what happens
                 next.
               </p>
+
+              <button
+                className="secondary-button faq-investment-button"
+                onClick={openInvestment}
+              >
+                View Your Investment
+                <ArrowRight size={17} />
+              </button>
             </div>
 
             <div className="faq-list">
@@ -826,17 +875,16 @@ function App() {
               could be.
             </p>
 
-            <div className="application-reassurance">
-              <Check size={18} />
-              <span>
-                Applying does not commit you to purchase anything.
-              </span>
+            <div className="application-price">
+              <span>Start your application now</span>
+              <strong>$99</strong>
             </div>
 
             <form
               className="apply-form"
               onSubmit={e => {
                 e.preventDefault();
+
                 alert(
                   "Application form preview: connect this form to your secure backend before accepting live applications."
                 );
@@ -860,6 +908,7 @@ function App() {
 
               <label>
                 What part of your life would you most like to change right now?
+
                 <textarea
                   required
                   rows={4}
@@ -869,6 +918,7 @@ function App() {
 
               <label>
                 What have you already tried to change this?
+
                 <textarea
                   required
                   rows={4}
@@ -878,6 +928,7 @@ function App() {
 
               <label>
                 Why now?
+
                 <textarea
                   required
                   rows={4}
@@ -886,14 +937,21 @@ function App() {
               </label>
 
               <button className="light-button" type="submit">
-                Apply to Find Your Line
+                Start My Application — $99
                 <ArrowRight size={18} />
               </button>
 
+              <button
+                className="application-investment-link"
+                type="button"
+                onClick={openInvestment}
+              >
+                Review the full program investment
+              </button>
+
               <small>
-                No payment is collected with this application. Connect this
-                form to a secure backend before public launch so submissions
-                can be received and reviewed.
+                Connect this form to a secure backend before public launch so
+                submissions can be received and reviewed.
               </small>
             </form>
           </div>
@@ -929,6 +987,164 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {investmentOpen && (
+        <div className="investment-overlay">
+          <div
+            className="investment-backdrop"
+            onClick={() => setInvestmentOpen(false)}
+          />
+
+          <section
+            className="investment-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Your Investment"
+          >
+            <div className="investment-panel-header">
+              <button
+                className="investment-back"
+                onClick={() => setInvestmentOpen(false)}
+              >
+                <ArrowLeft size={19} />
+                Back
+              </button>
+
+              <button
+                className="investment-close"
+                onClick={() => setInvestmentOpen(false)}
+                aria-label="Close investment information"
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            <div className="investment-content">
+              <div className="investment-intro">
+                <span className="section-kicker">
+                  Your Investment
+                </span>
+
+                <h2>
+                  An investment in building a system you can keep using.
+                </h2>
+
+                <p>
+                  Find Your Line is designed to create something more valuable
+                  than a temporary burst of motivation: a repeatable way to
+                  think, decide, act, recover, and move forward with greater
+                  independence.
+                </p>
+              </div>
+
+              <div className="investment-price-card">
+                <span className="investment-label">
+                  Founding Member Pilot
+                </span>
+
+                <div className="investment-start">
+                  <strong>$99</strong>
+                  <span>to begin</span>
+                </div>
+
+                <div className="investment-breakdown">
+                  <div>
+                    <span>Then</span>
+                    <strong>11 × $200</strong>
+                    <small>monthly payments</small>
+                  </div>
+
+                  <div>
+                    <span>Total investment</span>
+                    <strong>$2,299</strong>
+                    <small>for the full program</small>
+                  </div>
+                </div>
+              </div>
+
+              <div className="investment-details-grid">
+                <div className="investment-description">
+                  <span className="section-kicker">
+                    What you are investing in
+                  </span>
+
+                  <h3>
+                    Not just information. A structured process for creating
+                    change.
+                  </h3>
+
+                  <p>
+                    Your investment supports a guided personal-growth system
+                    built around understanding your current reality, defining
+                    your direction, recognizing the patterns that interrupt
+                    progress, taking meaningful action, and building evidence
+                    that strengthens self-trust.
+                  </p>
+
+                  <p>
+                    The long-term objective is increasing independence: helping
+                    you develop a process you can continue using when new
+                    decisions, setbacks, opportunities, and changes appear.
+                  </p>
+                </div>
+
+                <div className="investment-includes">
+                  <h3>Included in the program</h3>
+
+                  {included.map(item => (
+                    <div
+                      className="investment-included-item"
+                      key={item}
+                    >
+                      <span>
+                        <Check size={16} />
+                      </span>
+
+                      <p>{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="investment-founders">
+                <div>
+                  <span className="section-kicker">
+                    Founding Member Pilot
+                  </span>
+
+                  <h3>
+                    Help shape what Find Your Line becomes.
+                  </h3>
+
+                  <p>
+                    The founding group is intentionally being used to test and
+                    strengthen the program around real experiences instead of
+                    assumptions. What we learn from this group will help shape
+                    future versions of the system.
+                  </p>
+                </div>
+
+                <Route size={42} />
+              </div>
+
+              <div className="investment-final-cta">
+                <div>
+                  <span>Ready to explore whether it fits?</span>
+                  <h3>Start your application for $99.</h3>
+                </div>
+
+                <button
+                  className="primary-button"
+                  onClick={() => scrollTo("#apply")}
+                >
+                  Start My Application Now — $99
+                  <ArrowRight size={18} />
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   );
 }
