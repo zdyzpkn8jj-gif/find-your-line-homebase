@@ -47,3 +47,4 @@ The included `wrangler.jsonc` points Cloudflare static assets to `./dist`.
 
 The application form is still a prototype. Connect it to a secure form/backend and complete privacy, billing, legal, and data-retention review before collecting real applicant data.
 cloudfare refresh 2 
+refresh 3
