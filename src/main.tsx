@@ -331,7 +331,7 @@ function App() {
             <div className="hero-visual">
               <div className="logo-card">
                 <img
-                  src="/find-your-line-logo.png"
+                  src="/find-your-line-logo-new.png"
                   alt="Find Your Line logo"
                 />
               </div>
