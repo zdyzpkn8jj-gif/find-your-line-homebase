@@ -154,11 +154,302 @@ const faqs = [
   ]
 ];
 
+function TryLineDemo({
+  onClose,
+  onApply
+}: {
+  onClose: () => void;
+  onApply: () => void;
+}) {
+  const [step, setStep] = useState(0);
+
+  const [answers, setAnswers] = useState({
+    reality: "",
+    direction: "",
+    pattern: "",
+    move: ""
+  });
+
+  const steps = [
+    {
+      key: "reality",
+      kicker: "01 · Current Reality",
+      title: "What feels stuck right now?",
+      prompt:
+        "Think about the part of your life that keeps taking up mental space, feels underfulfilled, or needs to change.",
+      placeholder:
+        "Example: I know I want more from my career, but I keep going back and forth about what to do next."
+    },
+    {
+      key: "direction",
+      kicker: "02 · Direction",
+      title: "What would better look like?",
+      prompt:
+        "Do not worry about creating a perfect goal. Describe what you want more of, less of, or different.",
+      placeholder:
+        "Example: I want work that gives me more control, purpose, and room to grow."
+    },
+    {
+      key: "pattern",
+      kicker: "03 · Pattern",
+      title: "What usually gets in the way?",
+      prompt:
+        "Look for a repeating behavior, fear, assumption, distraction, or cycle—not a character flaw.",
+      placeholder:
+        "Example: I get excited, start planning everything at once, get overwhelmed, and stop."
+    },
+    {
+      key: "move",
+      kicker: "04 · Meaningful Action",
+      title: "What is one move you could make in the next 48 hours?",
+      prompt:
+        "Choose something small enough to actually do, but meaningful enough to produce new information or movement.",
+      placeholder:
+        "Example: Schedule one conversation with someone already doing the work I am considering."
+    }
+  ] as const;
+
+  const current = steps[step];
+
+  const currentValue =
+    answers[current?.key as keyof typeof answers] || "";
+
+  const updateAnswer = (value: string) => {
+    if (!current) return;
+
+    setAnswers(previous => ({
+      ...previous,
+      [current.key]: value
+    }));
+  };
+
+  const restart = () => {
+    setStep(0);
+
+    setAnswers({
+      reality: "",
+      direction: "",
+      pattern: "",
+      move: ""
+    });
+  };
+
+  if (step === steps.length) {
+    return (
+      <div className="try-overlay">
+        <div className="try-backdrop" onClick={onClose} />
+
+        <section
+          className="try-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Your Find Your Line test drive"
+        >
+          <div className="try-header">
+            <button className="try-back" onClick={onClose}>
+              <ArrowLeft size={18} />
+              Back to site
+            </button>
+
+            <button
+              className="try-close"
+              onClick={onClose}
+              aria-label="Close"
+            >
+              <X size={21} />
+            </button>
+          </div>
+
+          <div className="try-result-wrap">
+            <div className="try-result-heading">
+              <span className="section-kicker">
+                Your Test Drive
+              </span>
+
+              <h2>You just started finding your line.</h2>
+
+              <p>
+                You identified where you are, what better could look like,
+                one pattern worth watching, and one meaningful action that
+                can create movement.
+              </p>
+            </div>
+
+            <div className="try-summary">
+              <article>
+                <span>01 · CURRENT REALITY</span>
+                <h3>Where you are</h3>
+                <p>{answers.reality}</p>
+              </article>
+
+              <article>
+                <span>02 · DIRECTION</span>
+                <h3>Where you want to move</h3>
+                <p>{answers.direction}</p>
+              </article>
+
+              <article>
+                <span>03 · PATTERN</span>
+                <h3>What to watch</h3>
+                <p>{answers.pattern}</p>
+              </article>
+
+              <article className="try-next-move">
+                <span>04 · NEXT MEANINGFUL MOVE</span>
+                <h3>Your next 48 hours</h3>
+                <p>{answers.move}</p>
+              </article>
+            </div>
+
+            <div className="try-result-message">
+              <Route size={28} />
+
+              <div>
+                <h3>This is the beginning, not the answer.</h3>
+
+                <p>
+                  The full Find Your Line process goes deeper:
+                  testing assumptions, identifying recurring trap
+                  patterns, building evidence, recovering from setbacks,
+                  and turning this kind of thinking into a repeatable
+                  system you can use for yourself.
+                </p>
+              </div>
+            </div>
+
+            <div className="try-final-actions">
+              <button
+                className="primary-button"
+                onClick={onApply}
+              >
+                Start My Application Now — $99
+                <ArrowRight size={18} />
+              </button>
+
+              <button
+                className="secondary-button"
+                onClick={restart}
+              >
+                Try It Again
+              </button>
+            </div>
+
+            <p className="try-privacy">
+              Your answers in this test drive stay in your browser
+              and are not submitted anywhere.
+            </p>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  return (
+    <div className="try-overlay">
+      <div className="try-backdrop" onClick={onClose} />
+
+      <section
+        className="try-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Test Your Line"
+      >
+        <div className="try-header">
+          <button className="try-back" onClick={onClose}>
+            <ArrowLeft size={18} />
+            Back to site
+          </button>
+
+          <button
+            className="try-close"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <X size={21} />
+          </button>
+        </div>
+
+        <div className="try-content">
+          <div className="try-progress">
+            <div>
+              <span>
+                Step {step + 1} of {steps.length}
+              </span>
+
+              <strong>
+                {Math.round(((step + 1) / steps.length) * 100)}%
+              </strong>
+            </div>
+
+            <div className="try-progress-track">
+              <span
+                style={{
+                  width: `${((step + 1) / steps.length) * 100}%`
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="try-question">
+            <span className="section-kicker">
+              {current.kicker}
+            </span>
+
+            <h2>{current.title}</h2>
+
+            <p>{current.prompt}</p>
+
+            <textarea
+              autoFocus
+              rows={7}
+              value={currentValue}
+              onChange={e => updateAnswer(e.target.value)}
+              placeholder={current.placeholder}
+            />
+
+            <div className="try-question-actions">
+              {step > 0 ? (
+                <button
+                  className="secondary-button"
+                  onClick={() => setStep(step - 1)}
+                >
+                  <ArrowLeft size={17} />
+                  Previous
+                </button>
+              ) : (
+                <span />
+              )}
+
+              <button
+                className="primary-button"
+                disabled={!currentValue.trim()}
+                onClick={() => setStep(step + 1)}
+              >
+                {step === steps.length - 1
+                  ? "Show My Line"
+                  : "Continue"}
+
+                <ArrowRight size={17} />
+              </button>
+            </div>
+
+            <p className="try-helper">
+              There is no perfect answer. Write what is true for
+              you right now.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [showAllCycles, setShowAllCycles] = useState(false);
   const [investmentOpen, setInvestmentOpen] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false);
 
   const navItems = useMemo(
     () => [
@@ -172,16 +463,18 @@ function App() {
   );
 
   useEffect(() => {
-    document.body.style.overflow = investmentOpen ? "hidden" : "";
+    document.body.style.overflow =
+      investmentOpen || demoOpen ? "hidden" : "";
 
     return () => {
       document.body.style.overflow = "";
     };
-  }, [investmentOpen]);
+  }, [investmentOpen, demoOpen]);
 
   const scrollTo = (hash: string) => {
     setMobileOpen(false);
     setInvestmentOpen(false);
+    setDemoOpen(false);
 
     setTimeout(() => {
       document.querySelector(hash)?.scrollIntoView({
@@ -192,10 +485,19 @@ function App() {
 
   const openInvestment = () => {
     setMobileOpen(false);
+    setDemoOpen(false);
     setInvestmentOpen(true);
   };
 
-  const visibleCycles = showAllCycles ? cycles : cycles.slice(0, 5);
+  const openDemo = () => {
+    setMobileOpen(false);
+    setInvestmentOpen(false);
+    setDemoOpen(true);
+  };
+
+  const visibleCycles = showAllCycles
+    ? cycles
+    : cycles.slice(0, 5);
 
   return (
     <div className="app-shell">
@@ -216,12 +518,25 @@ function App() {
             </span>
           </button>
 
-          <nav className="desktop-nav" aria-label="Primary navigation">
+          <nav
+            className="desktop-nav"
+            aria-label="Primary navigation"
+          >
             {navItems.map(([label, href]) => (
-              <button key={href} onClick={() => scrollTo(href)}>
+              <button
+                key={href}
+                onClick={() => scrollTo(href)}
+              >
                 {label}
               </button>
             ))}
+
+            <button
+              className="try-nav-link"
+              onClick={openDemo}
+            >
+              Test Your Line
+            </button>
 
             <button
               className="investment-nav-link"
@@ -244,7 +559,11 @@ function App() {
               onClick={() => setMobileOpen(v => !v)}
               aria-label="Toggle menu"
             >
-              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+              {mobileOpen ? (
+                <X size={22} />
+              ) : (
+                <Menu size={22} />
+              )}
             </button>
           </div>
         </div>
@@ -252,10 +571,21 @@ function App() {
         {mobileOpen && (
           <div className="mobile-nav">
             {navItems.map(([label, href]) => (
-              <button key={href} onClick={() => scrollTo(href)}>
+              <button
+                key={href}
+                onClick={() => scrollTo(href)}
+              >
                 {label}
               </button>
             ))}
+
+            <button
+              className="mobile-try-link"
+              onClick={openDemo}
+            >
+              Test Your Line
+              <ArrowRight size={17} />
+            </button>
 
             <button
               className="mobile-investment-link"
@@ -281,19 +611,24 @@ function App() {
                 Founding Member Pilot
               </div>
 
-              <p className="brand-overline">FIND YOUR LINE</p>
+              <p className="brand-overline">
+                FIND YOUR LINE
+              </p>
 
-              <h1>You know you’re capable of more.</h1>
+              <h1>
+                You know you’re capable of more.
+              </h1>
 
               <p className="hero-lead strong-lead">
-                You’re just tired of feeling stuck between where you are and
-                where you know you could be.
+                You’re just tired of feeling stuck between
+                where you are and where you know you could be.
               </p>
 
               <p className="hero-support">
-                Find Your Line helps you turn that frustration into clarity,
-                direction, and meaningful action—without pretending there is
-                one right path for everyone.
+                Find Your Line helps you turn that frustration
+                into clarity, direction, and meaningful action—
+                without pretending there is one right path for
+                everyone.
               </p>
 
               <div className="hero-actions">
@@ -306,24 +641,28 @@ function App() {
                 </button>
 
                 <button
-                  className="secondary-button"
-                  onClick={() => scrollTo("#how-it-works")}
+                  className="secondary-button try-hero-button"
+                  onClick={openDemo}
                 >
-                  See how it works
+                  Test Your Line Free
+                  <Compass size={18} />
                 </button>
               </div>
 
               <div className="micro-proof">
                 <span>
-                  <Check size={15} /> 10 Growth Cycles
+                  <Check size={15} />
+                  10 Growth Cycles
                 </span>
 
                 <span>
-                  <Check size={15} /> Human + AI support
+                  <Check size={15} />
+                  Human + AI support
                 </span>
 
                 <span>
-                  <Check size={15} /> Personal Success Plan
+                  <Check size={15} />
+                  Personal Success Plan
                 </span>
               </div>
             </div>
@@ -338,45 +677,57 @@ function App() {
 
               <div className="nature-ribbon">
                 <span>
-                  <Waves size={17} /> Calm
+                  <Waves size={17} />
+                  Calm
                 </span>
 
                 <span>
-                  <Sunrise size={17} /> Clarity
+                  <Sunrise size={17} />
+                  Clarity
                 </span>
 
                 <span>
-                  <Mountain size={17} /> Challenge
+                  <Mountain size={17} />
+                  Challenge
                 </span>
 
                 <span>
-                  <Route size={17} /> Direction
+                  <Route size={17} />
+                  Direction
                 </span>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="fit" className="section fit-section">
+        <section
+          id="fit"
+          className="section fit-section"
+        >
           <div className="container fit-grid">
             <div className="fit-heading">
-              <span className="section-kicker">This might be you</span>
+              <span className="section-kicker">
+                This might be you
+              </span>
 
               <h2>
-                You do not need to be failing to know something needs to
-                change.
+                You do not need to be failing to know
+                something needs to change.
               </h2>
 
               <p>
-                Find Your Line is built for people who can feel there is more
-                in them, but need a practical way to turn that feeling into
-                movement.
+                Find Your Line is built for people who can
+                feel there is more in them, but need a
+                practical way to turn that feeling into movement.
               </p>
             </div>
 
             <div className="fit-list">
               {audienceItems.map(item => (
-                <div className="fit-item" key={item}>
+                <div
+                  className="fit-item"
+                  key={item}
+                >
                   <span className="fit-check">
                     <Check size={17} />
                   </span>
@@ -387,53 +738,70 @@ function App() {
 
               <button
                 className="text-cta"
-                onClick={() => scrollTo("#apply")}
+                onClick={openDemo}
               >
-                This sounds like me
+                Test the method free
                 <ArrowRight size={17} />
               </button>
             </div>
           </div>
         </section>
 
-        <section id="why" className="section quiet-section">
+        <section
+          id="why"
+          className="section quiet-section"
+        >
           <div className="container split-copy">
             <div>
-              <span className="section-kicker">Why Find Your Line</span>
-              <h2>The trail is different for everyone.</h2>
+              <span className="section-kicker">
+                Why Find Your Line
+              </span>
+
+              <h2>
+                The trail is different for everyone.
+              </h2>
             </div>
 
             <div className="large-body">
               <p>
-                Off-road, there is rarely one perfect line through an obstacle.
-                You read the terrain, choose a path, adjust when conditions
-                change, and keep moving.
+                Off-road, there is rarely one perfect line
+                through an obstacle. You read the terrain,
+                choose a path, adjust when conditions change,
+                and keep moving.
               </p>
 
               <p>
-                Life works the same way. The goal is not to hand you someone
-                else’s definition of success. It is to help you understand your
-                terrain, choose your direction, test it in the real world, and
-                build the confidence to keep navigating for yourself.
+                Life works the same way. The goal is not to
+                hand you someone else’s definition of success.
+                It is to help you understand your terrain,
+                choose your direction, test it in the real
+                world, and build the confidence to keep
+                navigating for yourself.
               </p>
             </div>
           </div>
         </section>
 
-        <section id="how-it-works" className="section">
+        <section
+          id="how-it-works"
+          className="section"
+        >
           <div className="container">
             <div className="section-heading">
-              <span className="section-kicker">How it works</span>
+              <span className="section-kicker">
+                How it works
+              </span>
 
               <h2>
-                Not motivation for a week. A better way to navigate what comes
-                next.
+                Not motivation for a week. A better way to
+                navigate what comes next.
               </h2>
 
               <p>
-                The program combines guided reflection, real-world action,
-                human coaching at key decision points, and AI-supported
-                continuity between sessions.
+                The program combines guided reflection,
+                real-world action, human coaching at key
+                decision points, and AI-supported continuity
+                between sessions.
               </p>
             </div>
 
@@ -441,62 +809,66 @@ function App() {
               <article className="feature-card">
                 <Compass />
                 <h3>Define what matters</h3>
-
                 <p>
-                  Build your North Star around the life you actually want to
-                  create.
+                  Build your North Star around the life you
+                  actually want to create.
                 </p>
               </article>
 
               <article className="feature-card">
                 <Brain />
                 <h3>Understand the pattern</h3>
-
                 <p>
-                  Identify what repeatedly interrupts your progress and why it
-                  happens.
+                  Identify what repeatedly interrupts your
+                  progress and why it happens.
                 </p>
               </article>
 
               <article className="feature-card">
                 <Target />
                 <h3>Take meaningful action</h3>
-
                 <p>
-                  Turn insight into the smallest action that actually changes
-                  something.
+                  Turn insight into the smallest action that
+                  actually changes something.
                 </p>
               </article>
 
               <article className="feature-card">
                 <RefreshCw />
                 <h3>Adapt and recover</h3>
-
                 <p>
-                  Use setbacks as information instead of proof that you should
-                  quit.
+                  Use setbacks as information instead of proof
+                  that you should quit.
                 </p>
               </article>
 
               <article className="feature-card">
                 <BarChart3 />
                 <h3>Build evidence</h3>
-
                 <p>
-                  Capture real examples of changed behavior and growing
-                  self-trust.
+                  Capture real examples of changed behavior
+                  and growing self-trust.
                 </p>
               </article>
 
               <article className="feature-card">
                 <ShieldCheck />
                 <h3>Own your direction</h3>
-
                 <p>
-                  The goal is increasing independence—not lifelong dependence
-                  on a coach.
+                  The goal is increasing independence—not
+                  lifelong dependence on a coach.
                 </p>
               </article>
+            </div>
+
+            <div className="section-demo-cta">
+              <button
+                className="primary-button"
+                onClick={openDemo}
+              >
+                Test Your Line Free
+                <ArrowRight size={17} />
+              </button>
             </div>
           </div>
         </section>
@@ -508,11 +880,14 @@ function App() {
                 The Personal Success Loop
               </span>
 
-              <h2>A repeatable process for the moment you feel stuck.</h2>
+              <h2>
+                A repeatable process for the moment you feel
+                stuck.
+              </h2>
 
               <p>
-                The goal is not to avoid hard terrain. It is to become better at
-                reading it.
+                The goal is not to avoid hard terrain. It is
+                to become better at reading it.
               </p>
             </div>
 
@@ -527,12 +902,18 @@ function App() {
               ].map((item, i) => (
                 <React.Fragment key={item}>
                   <div className="loop-step">
-                    <span>{String(i + 1).padStart(2, "0")}</span>
+                    <span>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+
                     <strong>{item}</strong>
                   </div>
 
                   {i < 5 && (
-                    <ArrowRight className="loop-arrow" size={17} />
+                    <ArrowRight
+                      className="loop-arrow"
+                      size={17}
+                    />
                   )}
                 </React.Fragment>
               ))}
@@ -543,85 +924,122 @@ function App() {
         <section className="section outcomes-section">
           <div className="container outcomes-layout">
             <div className="outcomes-copy">
-              <span className="section-kicker">What changes</span>
+              <span className="section-kicker">
+                What changes
+              </span>
 
               <h2>
-                The goal is not to make you dependent on another system.
+                The goal is not to make you dependent on
+                another system.
               </h2>
 
               <p>
-                The goal is to help you become better at making decisions,
-                taking action, recovering from setbacks, and trusting the
-                evidence you build along the way.
+                The goal is to help you become better at
+                making decisions, taking action, recovering
+                from setbacks, and trusting the evidence you
+                build along the way.
               </p>
             </div>
 
             <div className="outcomes-grid">
-              {outcomes.map(([title, desc], index) => (
-                <article className="outcome-card" key={title}>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <h3>{title}</h3>
-                  <p>{desc}</p>
-                </article>
-              ))}
+              {outcomes.map(
+                ([title, desc], index) => (
+                  <article
+                    className="outcome-card"
+                    key={title}
+                  >
+                    <span>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+
+                    <h3>{title}</h3>
+                    <p>{desc}</p>
+                  </article>
+                )
+              )}
             </div>
           </div>
         </section>
 
-        <section id="dashboard" className="section dashboard-section">
+        <section
+          id="dashboard"
+          className="section dashboard-section"
+        >
           <div className="container dashboard-grid">
             <div className="dashboard-copy">
-              <span className="section-kicker">Your Homebase</span>
+              <span className="section-kicker">
+                Your Homebase
+              </span>
 
               <h2>
-                Your direction should not disappear the moment life gets busy.
+                Your direction should not disappear the moment
+                life gets busy.
               </h2>
 
               <p>
-                Homebase keeps the important pieces visible so you can return
-                to your direction without rebuilding your thinking every time
-                life gets noisy.
+                Homebase keeps the important pieces visible so
+                you can return to your direction without
+                rebuilding your thinking every time life gets
+                noisy.
               </p>
 
               <ul className="plain-list">
                 <li>
-                  <Check size={17} /> Your North Star
+                  <Check size={17} />
+                  Your North Star
                 </li>
 
                 <li>
-                  <Check size={17} /> Your Current Chapter
+                  <Check size={17} />
+                  Your Current Chapter
                 </li>
 
                 <li>
-                  <Check size={17} /> Your Current Focus
+                  <Check size={17} />
+                  Your Current Focus
                 </li>
 
                 <li>
-                  <Check size={17} /> Your Next Meaningful Move
+                  <Check size={17} />
+                  Your Next Meaningful Move
                 </li>
 
                 <li>
-                  <Check size={17} /> Your Trap Pattern
+                  <Check size={17} />
+                  Your Trap Pattern
                 </li>
 
                 <li>
-                  <Check size={17} /> Your Evidence Log
+                  <Check size={17} />
+                  Your Evidence Log
                 </li>
               </ul>
 
-              <button
-                className="secondary-button dashboard-cta"
-                onClick={() => scrollTo("#apply")}
-              >
-                Start My Application Now — $99
-                <ArrowRight size={17} />
-              </button>
+              <div className="dashboard-actions">
+                <button
+                  className="secondary-button dashboard-cta"
+                  onClick={() => scrollTo("#apply")}
+                >
+                  Start My Application Now — $99
+                  <ArrowRight size={17} />
+                </button>
+
+                <button
+                  className="demo-link-button"
+                  onClick={openDemo}
+                >
+                  Try the method first
+                </button>
+              </div>
             </div>
 
             <div className="dashboard-mock">
               <div className="dash-top">
                 <div>
-                  <span className="dash-label">Find Your Line</span>
+                  <span className="dash-label">
+                    Find Your Line
+                  </span>
+
                   <h3>Your Homebase</h3>
                 </div>
 
@@ -634,8 +1052,8 @@ function App() {
                 <span>MY NORTH STAR</span>
 
                 <p>
-                  Build a life with more control, purpose, meaningful work, and
-                  time for what matters.
+                  Build a life with more control, purpose,
+                  meaningful work, and time for what matters.
                 </p>
               </div>
 
@@ -644,19 +1062,28 @@ function App() {
                   <span>CURRENT FOCUS</span>
 
                   <p>
-                    Validate the next career move with real-world evidence.
+                    Validate the next career move with
+                    real-world evidence.
                   </p>
                 </div>
 
                 <div className="dash-card">
                   <span>NEXT MOVE</span>
-                  <p>Schedule one 20-minute conversation by Friday.</p>
+
+                  <p>
+                    Schedule one 20-minute conversation by
+                    Friday.
+                  </p>
                 </div>
               </div>
 
               <div className="dash-card">
                 <span>PATTERN I’M WATCHING</span>
-                <p>Excitement → Overplanning → Overwhelm → Avoidance</p>
+
+                <p>
+                  Excitement → Overplanning → Overwhelm →
+                  Avoidance
+                </p>
               </div>
 
               <div className="evidence-strip">
@@ -664,7 +1091,10 @@ function App() {
 
                 <div>
                   <strong>Evidence +1</strong>
-                  <span>You acted before feeling completely ready.</span>
+
+                  <span>
+                    You acted before feeling completely ready.
+                  </span>
                 </div>
               </div>
             </div>
@@ -682,14 +1112,16 @@ function App() {
               </span>
 
               <h2>
-                Clarity often shows up when the noise gets quiet.
+                Clarity often shows up when the noise gets
+                quiet.
               </h2>
 
               <p>
-                Sometimes you need distance from the routine to see your
-                situation differently. A trail, a sunrise, open water, or
-                simply a quiet place can create enough space to think clearly
-                about what comes next.
+                Sometimes you need distance from the routine
+                to see your situation differently. A trail,
+                a sunrise, open water, or simply a quiet place
+                can create enough space to think clearly about
+                what comes next.
               </p>
             </div>
 
@@ -700,7 +1132,8 @@ function App() {
                 <h3>Clarity</h3>
 
                 <p>
-                  Step away from the noise and see where you really are.
+                  Step away from the noise and see where you
+                  really are.
                 </p>
               </article>
 
@@ -710,7 +1143,8 @@ function App() {
                 <h3>Perspective</h3>
 
                 <p>
-                  Look at the terrain before deciding which line to take.
+                  Look at the terrain before deciding which
+                  line to take.
                 </p>
               </article>
 
@@ -720,7 +1154,8 @@ function App() {
                 <h3>Direction</h3>
 
                 <p>
-                  Choose the next move and begin moving deliberately.
+                  Choose the next move and begin moving
+                  deliberately.
                 </p>
               </article>
             </div>
@@ -734,18 +1169,22 @@ function App() {
                 Why a founding pilot?
               </span>
 
-              <h2>Build it with real people, not assumptions.</h2>
+              <h2>
+                Build it with real people, not assumptions.
+              </h2>
 
               <p>
-                Find Your Line is launching with a small founding group so the
-                system can be tested, refined, and strengthened around
-                real-world use.
+                Find Your Line is launching with a small
+                founding group so the system can be tested,
+                refined, and strengthened around real-world
+                use.
               </p>
 
               <p>
-                Founding members receive a closer level of involvement in that
-                process and help shape what the program becomes—while still
-                getting a structured system designed to move them toward
+                Founding members receive a closer level of
+                involvement in that process and help shape what
+                the program becomes—while still getting a
+                structured system designed to move them toward
                 greater clarity, action, and independence.
               </p>
 
@@ -762,16 +1201,22 @@ function App() {
               <MessageCircle size={28} />
 
               <blockquote>
-                “We should never profit by convincing people they are incapable
-                without us. The goal is to help them become more capable.”
+                “We should never profit by convincing people
+                they are incapable without us. The goal is to
+                help them become more capable.”
               </blockquote>
 
-              <span>Choose your line. Own your direction.</span>
+              <span>
+                Choose your line. Own your direction.
+              </span>
             </div>
           </div>
         </section>
 
-        <section id="cycles" className="section cycles-section">
+        <section
+          id="cycles"
+          className="section cycles-section"
+        >
           <div className="container">
             <div className="section-heading narrow">
               <span className="section-kicker">
@@ -779,51 +1224,72 @@ function App() {
               </span>
 
               <h2>
-                Structure without pretending everyone should follow the same
-                life path.
+                Structure without pretending everyone should
+                follow the same life path.
               </h2>
 
               <p>
-                Each cycle develops a capability you can keep using after the
-                program is over.
+                Each cycle develops a capability you can keep
+                using after the program is over.
               </p>
             </div>
 
             <div className="cycles-list">
-              {visibleCycles.map(([num, title, desc]) => (
-                <article className="cycle-row" key={num}>
-                  <span className="cycle-number">{num}</span>
-                  <h3>{title}</h3>
-                  <p>{desc}</p>
-                </article>
-              ))}
+              {visibleCycles.map(
+                ([num, title, desc]) => (
+                  <article
+                    className="cycle-row"
+                    key={num}
+                  >
+                    <span className="cycle-number">
+                      {num}
+                    </span>
+
+                    <h3>{title}</h3>
+
+                    <p>{desc}</p>
+                  </article>
+                )
+              )}
             </div>
 
             <button
               className="secondary-button cycles-toggle"
-              onClick={() => setShowAllCycles(v => !v)}
+              onClick={() =>
+                setShowAllCycles(v => !v)
+              }
             >
               {showAllCycles
                 ? "Show fewer cycles"
                 : "See all 10 Growth Cycles"}
 
               <ChevronDown
-                className={showAllCycles ? "rotate" : ""}
+                className={
+                  showAllCycles ? "rotate" : ""
+                }
                 size={18}
               />
             </button>
           </div>
         </section>
 
-        <section id="faq" className="section faq-section">
+        <section
+          id="faq"
+          className="section faq-section"
+        >
           <div className="container faq-grid">
             <div>
-              <span className="section-kicker">FAQ</span>
-              <h2>Clear answers before you apply.</h2>
+              <span className="section-kicker">
+                FAQ
+              </span>
+
+              <h2>
+                Clear answers before you apply.
+              </h2>
 
               <p>
-                Know what the program is, what it is not, and what happens
-                next.
+                Know what the program is, what it is not,
+                and what happens next.
               </p>
 
               <button
@@ -836,30 +1302,44 @@ function App() {
             </div>
 
             <div className="faq-list">
-              {faqs.map(([q, a], index) => (
-                <div
-                  className={`faq-item ${
-                    openFaq === index ? "open" : ""
-                  }`}
-                  key={q}
-                >
-                  <button
-                    onClick={() =>
-                      setOpenFaq(openFaq === index ? null : index)
-                    }
+              {faqs.map(
+                ([q, a], index) => (
+                  <div
+                    className={`faq-item ${
+                      openFaq === index
+                        ? "open"
+                        : ""
+                    }`}
+                    key={q}
                   >
-                    <span>{q}</span>
-                    <ChevronDown size={20} />
-                  </button>
+                    <button
+                      onClick={() =>
+                        setOpenFaq(
+                          openFaq === index
+                            ? null
+                            : index
+                        )
+                      }
+                    >
+                      <span>{q}</span>
 
-                  {openFaq === index && <p>{a}</p>}
-                </div>
-              ))}
+                      <ChevronDown size={20} />
+                    </button>
+
+                    {openFaq === index && (
+                      <p>{a}</p>
+                    )}
+                  </div>
+                )
+              )}
             </div>
           </div>
         </section>
 
-        <section id="apply" className="section apply-section">
+        <section
+          id="apply"
+          className="section apply-section"
+        >
           <div className="container apply-card">
             <div className="apply-sun" />
 
@@ -867,16 +1347,22 @@ function App() {
               Founding Member Application
             </span>
 
-            <h2>You do not need your entire life figured out.</h2>
+            <h2>
+              You do not need your entire life figured out.
+            </h2>
 
             <p>
-              You only need to be willing to start understanding what matters,
-              what keeps getting in the way, and what your next meaningful move
+              You only need to be willing to start
+              understanding what matters, what keeps getting
+              in the way, and what your next meaningful move
               could be.
             </p>
 
             <div className="application-price">
-              <span>Start your application now</span>
+              <span>
+                Start your application now
+              </span>
+
               <strong>$99</strong>
             </div>
 
@@ -893,11 +1379,16 @@ function App() {
               <div className="form-grid">
                 <label>
                   Name
-                  <input required placeholder="Your name" />
+
+                  <input
+                    required
+                    placeholder="Your name"
+                  />
                 </label>
 
                 <label>
                   Email
+
                   <input
                     required
                     type="email"
@@ -907,7 +1398,8 @@ function App() {
               </div>
 
               <label>
-                What part of your life would you most like to change right now?
+                What part of your life would you most like to
+                change right now?
 
                 <textarea
                   required
@@ -936,7 +1428,10 @@ function App() {
                 />
               </label>
 
-              <button className="light-button" type="submit">
+              <button
+                className="light-button"
+                type="submit"
+              >
                 Start My Application — $99
                 <ArrowRight size={18} />
               </button>
@@ -950,8 +1445,9 @@ function App() {
               </button>
 
               <small>
-                Connect this form to a secure backend before public launch so
-                submissions can be received and reviewed.
+                Connect this form to a secure backend before
+                public launch so submissions can be received
+                and reviewed.
               </small>
             </form>
           </div>
@@ -967,32 +1463,61 @@ function App() {
               </span>
 
               <span>
-                <strong>Find Your Line</strong>
-                <small>Choose your line. Own your direction.</small>
+                <strong>
+                  Find Your Line
+                </strong>
+
+                <small>
+                  Choose your line. Own your direction.
+                </small>
               </span>
             </div>
 
-            <p>Clarity. Resilience. Direction.</p>
+            <p>
+              Clarity. Resilience. Direction.
+            </p>
           </div>
 
           <div className="footer-note">
             <p>
-              Find Your Line is a personal-development program. It does not
-              provide medical, mental-health, legal, financial,
-              addiction-treatment, or crisis services and does not guarantee
-              specific external outcomes.
+              Find Your Line is a personal-development
+              program. It does not provide medical,
+              mental-health, legal, financial,
+              addiction-treatment, or crisis services and does
+              not guarantee specific external outcomes.
             </p>
 
-            <span>© 2026 Find Your Line. Founding pilot.</span>
+            <span>
+              © 2026 Find Your Line. Founding pilot.
+            </span>
           </div>
         </div>
       </footer>
+
+      {demoOpen && (
+        <TryLineDemo
+          onClose={() => setDemoOpen(false)}
+          onApply={() => {
+            setDemoOpen(false);
+
+            setTimeout(() => {
+              document
+                .querySelector("#apply")
+                ?.scrollIntoView({
+                  behavior: "smooth"
+                });
+            }, 20);
+          }}
+        />
+      )}
 
       {investmentOpen && (
         <div className="investment-overlay">
           <div
             className="investment-backdrop"
-            onClick={() => setInvestmentOpen(false)}
+            onClick={() =>
+              setInvestmentOpen(false)
+            }
           />
 
           <section
@@ -1004,7 +1529,9 @@ function App() {
             <div className="investment-panel-header">
               <button
                 className="investment-back"
-                onClick={() => setInvestmentOpen(false)}
+                onClick={() =>
+                  setInvestmentOpen(false)
+                }
               >
                 <ArrowLeft size={19} />
                 Back
@@ -1012,7 +1539,9 @@ function App() {
 
               <button
                 className="investment-close"
-                onClick={() => setInvestmentOpen(false)}
+                onClick={() =>
+                  setInvestmentOpen(false)
+                }
                 aria-label="Close investment information"
               >
                 <X size={22} />
@@ -1026,14 +1555,16 @@ function App() {
                 </span>
 
                 <h2>
-                  An investment in building a system you can keep using.
+                  An investment in building a system you can
+                  keep using.
                 </h2>
 
                 <p>
-                  Find Your Line is designed to create something more valuable
-                  than a temporary burst of motivation: a repeatable way to
-                  think, decide, act, recover, and move forward with greater
-                  independence.
+                  Find Your Line is designed to create
+                  something more valuable than a temporary
+                  burst of motivation: a repeatable way to
+                  think, decide, act, recover, and move forward
+                  with greater independence.
                 </p>
               </div>
 
@@ -1051,13 +1582,23 @@ function App() {
                   <div>
                     <span>Then</span>
                     <strong>11 × $200</strong>
-                    <small>monthly payments</small>
+                    <small>
+                      monthly payments
+                    </small>
                   </div>
 
                   <div>
-                    <span>Total investment</span>
-                    <strong>$2,299</strong>
-                    <small>for the full program</small>
+                    <span>
+                      Total investment
+                    </span>
+
+                    <strong>
+                      $2,299
+                    </strong>
+
+                    <small>
+                      for the full program
+                    </small>
                   </div>
                 </div>
               </div>
@@ -1069,27 +1610,33 @@ function App() {
                   </span>
 
                   <h3>
-                    Not just information. A structured process for creating
-                    change.
+                    Not just information. A structured
+                    process for creating change.
                   </h3>
 
                   <p>
-                    Your investment supports a guided personal-growth system
-                    built around understanding your current reality, defining
-                    your direction, recognizing the patterns that interrupt
-                    progress, taking meaningful action, and building evidence
+                    Your investment supports a guided
+                    personal-growth system built around
+                    understanding your current reality,
+                    defining your direction, recognizing the
+                    patterns that interrupt progress, taking
+                    meaningful action, and building evidence
                     that strengthens self-trust.
                   </p>
 
                   <p>
-                    The long-term objective is increasing independence: helping
-                    you develop a process you can continue using when new
-                    decisions, setbacks, opportunities, and changes appear.
+                    The long-term objective is increasing
+                    independence: helping you develop a
+                    process you can continue using when new
+                    decisions, setbacks, opportunities, and
+                    changes appear.
                   </p>
                 </div>
 
                 <div className="investment-includes">
-                  <h3>Included in the program</h3>
+                  <h3>
+                    Included in the program
+                  </h3>
 
                   {included.map(item => (
                     <div
@@ -1117,10 +1664,12 @@ function App() {
                   </h3>
 
                   <p>
-                    The founding group is intentionally being used to test and
-                    strengthen the program around real experiences instead of
-                    assumptions. What we learn from this group will help shape
-                    future versions of the system.
+                    The founding group is intentionally being
+                    used to test and strengthen the program
+                    around real experiences instead of
+                    assumptions. What we learn from this group
+                    will help shape future versions of the
+                    system.
                   </p>
                 </div>
 
@@ -1129,13 +1678,20 @@ function App() {
 
               <div className="investment-final-cta">
                 <div>
-                  <span>Ready to explore whether it fits?</span>
-                  <h3>Start your application for $99.</h3>
+                  <span>
+                    Ready to explore whether it fits?
+                  </span>
+
+                  <h3>
+                    Start your application for $99.
+                  </h3>
                 </div>
 
                 <button
                   className="primary-button"
-                  onClick={() => scrollTo("#apply")}
+                  onClick={() =>
+                    scrollTo("#apply")
+                  }
                 >
                   Start My Application Now — $99
                   <ArrowRight size={18} />
@@ -1149,7 +1705,9 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(
+createRoot(
+  document.getElementById("root")!
+).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
