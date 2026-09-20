@@ -270,28 +270,47 @@ function App() {
             </div>
           </div>
         </section>
+        <section className="section perspective-section">
+  <div className="perspective-glow perspective-glow-a" />
+  <div className="perspective-glow perspective-glow-b" />
 
-        <section className="section water-section">
-          <div className="container water-grid">
-            <div>
-              <span className="section-kicker">Nature is part of the identity</span>
-              <h2>Calm enough to think. Strong enough to move.</h2>
-              <p>
-                The visual language of Find Your Line is inspired by hydro-blue water, clear mornings,
-                mountain trails, and sunrise light—because the brand should feel like the same perspective
-                people often find when they finally get outside the noise.
-              </p>
-            </div>
-            <div className="palette">
-              <div className="swatch hydro"><span>Hydro Blue</span></div>
-              <div className="swatch aqua"><span>Aqua</span></div>
-              <div className="swatch teal"><span>Deep Water</span></div>
-              <div className="swatch sunrise"><span>Sunrise</span></div>
-              <div className="swatch gold"><span>First Light</span></div>
-              <div className="swatch cloud"><span>Cloud White</span></div>
-            </div>
-          </div>
-        </section>
+  <div className="container perspective-wrap">
+    <div className="perspective-copy">
+      <span className="section-kicker">Get outside the noise</span>
+      <h2>Clarity often shows up when the noise gets quiet.</h2>
+      <p>
+        Sometimes you need distance from the routine to see your situation differently.
+        A trail, a sunrise, open water, or simply a quiet place can create enough space
+        to think clearly about what comes next.
+      </p>
+    </div>
+
+    <div className="perspective-cards">
+      <article className="perspective-card">
+        <Compass size={24} />
+        <span>01</span>
+        <h3>Clarity</h3>
+        <p>Step away from the noise and see where you really are.</p>
+      </article>
+
+      <article className="perspective-card">
+        <Mountain size={24} />
+        <span>02</span>
+        <h3>Perspective</h3>
+        <p>Look at the terrain before deciding which line to take.</p>
+      </article>
+
+      <article className="perspective-card">
+        <Route size={24} />
+        <span>03</span>
+        <h3>Direction</h3>
+        <p>Choose the next move and begin moving deliberately.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+
 
         <section id="dashboard" className="section dashboard-section">
           <div className="container dashboard-grid">
